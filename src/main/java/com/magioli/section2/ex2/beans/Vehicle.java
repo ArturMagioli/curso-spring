@@ -1,5 +1,8 @@
-package com.magioli.section2.beans;
+package com.magioli.section2.ex2.beans;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Vehicle {
 
     private String name;

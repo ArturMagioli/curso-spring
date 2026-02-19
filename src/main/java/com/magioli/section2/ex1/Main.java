@@ -1,7 +1,7 @@
-package com.magioli.section2;
+package com.magioli.section2.ex1;
 
-import com.magioli.section2.beans.Vehicle;
-import com.magioli.section2.config.ProjectConfig;
+import com.magioli.section2.ex1.beans.Vehicle;
+import com.magioli.section2.ex1.config.ProjectConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
