@@ -9,8 +9,10 @@ public class Main {
 
     static void main() {
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(ProjectConfig.class);
+        AnnotationConfigApplicationContext  context = new AnnotationConfigApplicationContext(ProjectConfig.class);
         Vehicle vehicle = context.getBean(Vehicle.class);
         System.out.println("Vehicle name from Spring Context is " + vehicle.getName());
+        vehicle.sayHello();
+        context.close();
     }
 }
