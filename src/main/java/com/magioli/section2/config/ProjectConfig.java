@@ -3,9 +3,11 @@ package com.magioli.section2.config;
 import com.magioli.section2.beans.Vehicle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
+@Import(AnotherProjectConfig.class)
 public class ProjectConfig {
 
     @Bean(name="audiVehicle")

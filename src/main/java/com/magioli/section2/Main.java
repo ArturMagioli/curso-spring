@@ -14,5 +14,9 @@ public class Main {
         Vehicle vehicle1 = context.getBean(Vehicle.class);
 
         System.out.println(vehicle1.getName());
+
+        Integer number = context.getBean(Integer.class);
+
+        System.out.println(number);
     }
 }
