@@ -3,6 +3,7 @@ package com.magioli.section2.config;
 import com.magioli.section2.beans.Vehicle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class ProjectConfig {
@@ -14,6 +15,7 @@ public class ProjectConfig {
         return vehicle;
     }
 
+    @Primary
     @Bean(name="hondaVehicle")
     public Vehicle vehicle2() {
         Vehicle vehicle = new Vehicle();
