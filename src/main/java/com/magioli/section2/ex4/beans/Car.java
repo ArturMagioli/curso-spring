@@ -10,7 +10,9 @@ public class Car extends Vehicle {
     //@Autowired
     private Engine engine;
 
-    public Car() {
+    @Autowired
+    public Car(Engine engine) {
+        this.engine = engine;
         System.out.println("Car bean created");
     }
 
@@ -18,7 +20,7 @@ public class Car extends Vehicle {
         return engine;
     }
 
-    @Autowired
+    //@Autowired
     public void setEngine(Engine engine) {
         this.engine = engine;
     }
