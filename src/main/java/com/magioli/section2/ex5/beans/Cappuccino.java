@@ -1,10 +1,9 @@
 package com.magioli.section2.ex5.beans;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-@Component
-@Primary
+@Component("cappuccino")
+//@Primary
 public class Cappuccino implements Coffee {
 
     @Override
