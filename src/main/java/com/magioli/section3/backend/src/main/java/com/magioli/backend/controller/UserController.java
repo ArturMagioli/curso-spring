@@ -1,6 +1,7 @@
 package com.magioli.backend.controller;
 
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -42,5 +43,21 @@ public class UserController {
     @GetMapping("/search/map")
     public String searchUserWithMapQueryParams(@RequestParam Map<String, String> requestParams) {
         return "Fetched user with query params: " + requestParams.get("name") + " and sex: " + requestParams.get("gender");
+    }
+
+    @GetMapping("/headers")
+    public String readRequestHeaders(@RequestHeader("User-Agent") String userAgent,
+                        @RequestHeader(value = "User-Location", required = false, defaultValue = "Campo Grande") String userLocation) {
+        return "Received: " + userAgent + " " + userLocation;
+    }
+
+    @GetMapping("/headers/map")
+    public String readRequestHeadersWithMap(@RequestHeader Map<String, String> requestHeaders) {
+        return "Received: " + requestHeaders.get("User-Agent") + " " + requestHeaders.get("User-Location");
+    }
+
+    @GetMapping("/headers/http-headers")
+    public String readRequestHeadersWithHttpHeaders(@RequestHeader HttpHeaders requestHeaders) {
+        return "Received: " + requestHeaders.get("User-Agent") + " " + requestHeaders.get("User-Location");
     }
 }
