@@ -1,10 +1,7 @@
 package com.magioli.backend.controller;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -35,5 +32,15 @@ public class UserController {
     public String searchUserAddressWithMultiPathVariables(@PathVariable Map<String, String> pathVariablesMap) {
 
         return "Fetched user with id: " + pathVariablesMap.get("userId") + " and address id: " + pathVariablesMap.get("addressId");
+    }
+
+    @GetMapping("/search")
+    public String searchUserWithQueryParams(@RequestParam(required = false, defaultValue = "Guest") String name, @RequestParam(name = "gender") String sex) {
+        return "Fetched user with query params: " + name + " and sex: " + sex;
+    }
+
+    @GetMapping("/search/map")
+    public String searchUserWithMapQueryParams(@RequestParam Map<String, String> requestParams) {
+        return "Fetched user with query params: " + requestParams.get("name") + " and sex: " + requestParams.get("gender");
     }
 }
