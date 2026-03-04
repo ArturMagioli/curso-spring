@@ -1,6 +1,7 @@
 package com.magioli.backend.controller;
 
 
+import com.magioli.backend.dto.UserDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,5 +60,10 @@ public class UserController {
     @GetMapping("/headers/http-headers")
     public String readRequestHeadersWithHttpHeaders(@RequestHeader HttpHeaders requestHeaders) {
         return "Received: " + requestHeaders.get("User-Agent") + " " + requestHeaders.get("User-Location");
+    }
+
+    @PostMapping
+    public String createUser(@RequestBody UserDto userDto) {
+        return "User created with data: " + userDto;
     }
 }
