@@ -3,6 +3,9 @@ package com.magioli.backend.controller;
 
 import com.magioli.backend.dto.UserDto;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -12,7 +15,7 @@ import java.util.Map;
 public class UserController {
 
     @GetMapping({"/{userId}/posts/{postId}", "/{userId}/posts"})
-    public String searchUserPostWithMultiPathVariables(@PathVariable Long userId, @PathVariable(required = false) Long postId) {
+    public ResponseEntity<String> searchUserPostWithMultiPathVariables(@PathVariable Long userId, @PathVariable(required = false) Long postId) {
         String response;
 
         if(postId == null) {
@@ -21,7 +24,8 @@ public class UserController {
             response = "Fetched user with id: " + userId + " and post id: " + postId;
         }
 
-        return response;
+        return ResponseEntity.ok(response);
+//        return response;
     }
 
     @GetMapping({"/{userId}/orders/{orderId}"})
@@ -65,5 +69,18 @@ public class UserController {
     @PostMapping
     public String createUser(@RequestBody UserDto userDto) {
         return "User created with data: " + userDto;
+    }
+
+    @PostMapping("/request-entity")
+    public ResponseEntity<String> createUserWithResponseEntity(RequestEntity<UserDto> requestEntity) {
+        HttpHeaders httpHeaders = requestEntity.getHeaders();
+        UserDto userDto = requestEntity.getBody();
+        String queryParam = requestEntity.getUrl().getQuery();
+        String pathVariables = requestEntity.getUrl().getPath();
+//        return "User created with data: " + userDto.toString();
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header("Custom-Header", "ExampleValue")
+                .body("User created with data: " + userDto);
     }
 }
