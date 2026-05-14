@@ -2,6 +2,7 @@ package com.magioli.jobportal.company.controller;
 
 import com.magioli.jobportal.entity.Company;
 import com.magioli.jobportal.service.CompanyService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,13 +13,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/companies")
+@RequiredArgsConstructor
 public class CompanyController {
 
     private final CompanyService companyService;
 
-    public CompanyController(CompanyService companyService) {
-        this.companyService = companyService;
-    }
+//    @Autowired
+//    public CompanyController(CompanyService companyService) {
+//        this.companyService = companyService;
+//    }
 
     @GetMapping(version = "1.0")
     public ResponseEntity<List<Company>> getAllCompanies() {
