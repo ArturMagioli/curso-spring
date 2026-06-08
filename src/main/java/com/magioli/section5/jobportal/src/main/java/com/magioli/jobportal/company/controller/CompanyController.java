@@ -1,9 +1,8 @@
 package com.magioli.jobportal.company.controller;
 
-import com.magioli.jobportal.entity.Company;
+import com.magioli.jobportal.dto.CompanyDto;
 import com.magioli.jobportal.service.CompanyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +23,8 @@ public class CompanyController {
 //    }
 
     @GetMapping(version = "1.0")
-    public ResponseEntity<List<Company>> getAllCompanies() {
-        List<Company> companyList = companyService.getAllCompanies();
+    public ResponseEntity<List<CompanyDto>> getAllCompanies() {
+        List<CompanyDto> companyList = companyService.getAllCompanies();
         return ResponseEntity.ok(companyList);
     }
 }
