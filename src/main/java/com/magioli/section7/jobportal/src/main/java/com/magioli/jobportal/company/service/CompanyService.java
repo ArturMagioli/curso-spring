@@ -1,4 +1,4 @@
-package com.magioli.jobportal.service;
+package com.magioli.jobportal.company.service;
 
 import com.magioli.jobportal.dto.CompanyDto;
 
