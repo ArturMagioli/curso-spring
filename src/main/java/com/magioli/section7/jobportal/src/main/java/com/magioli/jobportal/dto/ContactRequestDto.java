@@ -3,5 +3,5 @@ package com.magioli.jobportal.dto;
 import java.io.Serializable;
 
 public record ContactRequestDto(String email, String message, String name,
-                    String userType) implements Serializable {
+                    String subject, String userType) implements Serializable {
 }

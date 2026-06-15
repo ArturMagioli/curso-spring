@@ -33,6 +33,7 @@ public class ContactServiceImpl implements ContactService {
         BeanUtils.copyProperties(contactRequestDto, contact);
         contact.setCreatedAt(Instant.now());
         contact.setCreatedBy("System");
+        contact.setStatus("NEW");
         return contact;
     }
 }
