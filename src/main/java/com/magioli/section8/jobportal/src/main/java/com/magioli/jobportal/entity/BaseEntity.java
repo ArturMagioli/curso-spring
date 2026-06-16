@@ -21,7 +21,6 @@ import java.time.Instant;
 public class BaseEntity {
 
     @CreatedDate
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -30,7 +29,6 @@ public class BaseEntity {
     private String createdBy;
 
     @LastModifiedDate
-    @UpdateTimestamp
     @Column(name = "updated_at", insertable = false)
     private Instant updatedAt;
 
