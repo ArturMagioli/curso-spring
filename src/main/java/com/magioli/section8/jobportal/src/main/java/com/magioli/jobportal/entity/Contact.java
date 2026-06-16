@@ -5,13 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
-
 @Entity
 @Table(name = "contacts")
 @Getter
 @Setter
-public class Contact {
+public class Contact extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,15 +36,4 @@ public class Contact {
     @Column(name = "status", nullable = false, length = 20)
     private String status;
 
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
-
-    @Column(name = "created_by", nullable = false, length = 20)
-    private String createdBy;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @Column(name = "updated_by", length = 20)
-    private String updatedBy;
 }
