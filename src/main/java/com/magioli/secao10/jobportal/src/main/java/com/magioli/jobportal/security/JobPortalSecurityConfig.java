@@ -14,7 +14,7 @@ public class JobPortalSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) {
         return http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
+                .formLogin(flc -> flc.disable())
                 .httpBasic(Customizer.withDefaults())
                 .build();
     }
