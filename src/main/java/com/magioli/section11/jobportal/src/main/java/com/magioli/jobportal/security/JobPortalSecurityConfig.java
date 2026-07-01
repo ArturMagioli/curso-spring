@@ -7,6 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -36,15 +42,6 @@ public class JobPortalSecurityConfig {
                     securedPaths.forEach(path -> requests.requestMatchers(path).authenticated());
                     requests.anyRequest().denyAll();
                 })
-//                        requests.requestMatchers("/api/companies/public").permitAll()
-//                                .requestMatchers("/api/contacts/public").permitAll()
-//                    requests.requestMatchers(RegexRequestMatcher.regexMatcher(".*public$")).permitAll()
-//                            .requestMatchers("/api/swagger-ui.html",
-//                                    "/swagger-ui/**",
-//                                    "/api/v3/api-docs/**",
-//                                    "/swagger-resources/**",
-//                                    "/swagger-ui.html",
-//                                    "/webjars/**").permitAll())
                 .formLogin(flc -> flc.disable())
                 .httpBasic(Customizer.withDefaults())
                 .build();
@@ -62,5 +59,22 @@ public class JobPortalSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+//        String password2 = passwordEncoder().encode("Admin@123"); -> maneira de obter o hash
+//        System.out.println(password2);
+        UserDetails user1 = User.builder().username("magioli").password("$2a$10$t9w7FHYAHupuEs91v0O2Iujym/eu5wzlHzZwijl5CXesDfF1rvCv")
+            .roles("USER").build();
+        UserDetails user2 = User.builder().username("admin").password("$2a$10$iDb6SUF1iSk2ykEhLSQVHOJ8vjou9IRuY5x8zcCsYCPixRR4s9tDC")
+            .roles("ADMIN").build();
+
+        return new InMemoryUserDetailsManager(user1, user2);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
