@@ -1,4 +1,4 @@
-package constants;
+package com.magioli.jobportal.constants;
 
 public class ApplicationConstants {
 

@@ -1,6 +1,6 @@
 package com.magioli.jobportal.security.util;
 
-import constants.ApplicationConstants;
+import com.magioli.jobportal.constants.ApplicationConstants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
