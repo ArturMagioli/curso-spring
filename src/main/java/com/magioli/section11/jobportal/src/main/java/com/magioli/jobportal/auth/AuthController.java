@@ -3,6 +3,7 @@ package com.magioli.jobportal.auth;
 import com.magioli.jobportal.dto.LoginRequestDto;
 import com.magioli.jobportal.dto.LoginResponseDto;
 import com.magioli.jobportal.dto.UserDto;
+import com.magioli.jobportal.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +23,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     @PostMapping(value = "/login/public", version = "1.0")
     public ResponseEntity<LoginResponseDto> apiLogin(@RequestBody LoginRequestDto loginRequestDto) {
         try {
             Authentication resultAuthentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.username(),
                     loginRequestDto.password()));
+            String jwtToken = jwtUtil.generateJwtToken(resultAuthentication);
             UserDto userDto = new UserDto();
             return ResponseEntity.ok(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),
-                    userDto, null));
+                    userDto, jwtToken));
         } catch (BadCredentialsException ex) {
             return buildErrorResponse(HttpStatus.UNAUTHORIZED,
                     "Invalid username or password");
