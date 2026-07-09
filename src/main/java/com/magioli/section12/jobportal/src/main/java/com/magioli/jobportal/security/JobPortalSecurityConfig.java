@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
@@ -70,21 +71,7 @@ public class JobPortalSecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-//        String password2 = passwordEncoder().encode("Admin@123"); -> maneira de obter o hash
-//        System.out.println(password2);
-        UserDetails user1 = User.builder().username("magioli").password("$2a$10$t9w7FHYAHupuEs91v0O2Iujym/eu5wzlHzZwijl5CXesDfF1rvCv")
-            .roles("USER").build();
-        UserDetails user2 = User.builder().username("admin").password("$2a$10$iDb6SUF1iSk2ykEhLSQVHOJ8vjou9IRuY5x8zcCsYCPixRR4s9tDC")
-            .roles("ADMIN").build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService());
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
+    public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
         return new ProviderManager(authenticationProvider);
     }
 

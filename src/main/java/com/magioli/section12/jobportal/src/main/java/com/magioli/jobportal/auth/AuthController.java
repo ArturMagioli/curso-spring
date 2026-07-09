@@ -50,6 +50,10 @@ public class AuthController {
                     loginRequestDto.password()));
             String jwtToken = jwtUtil.generateJwtToken(resultAuthentication);
             UserDto userDto = new UserDto();
+            JobPortalUser jobPortalUser = (JobPortalUser) resultAuthentication.getPrincipal();
+            BeanUtils.copyProperties(jobPortalUser, userDto);
+            userDto.setRole(jobPortalUser.getRole().getName());
+            userDto.setUserId(jobPortalUser.getId());
             return ResponseEntity.ok(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),
                     userDto, jwtToken));
         } catch (BadCredentialsException ex) {
