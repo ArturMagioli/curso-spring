@@ -1,4 +1,4 @@
-package com.magioli.jobportal.filter;
+package com.magioli.jobportal.security.filter;
 
 import com.magioli.jobportal.constants.ApplicationConstants;
 import io.jsonwebtoken.Claims;
