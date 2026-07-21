@@ -70,35 +70,14 @@ public class AuthController {
 
     @PostMapping("/register/public")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequestDto registerRequestDto) {
-        CompromisedPasswordDecision decision = compromisedPasswordChecker
-                .check(registerRequestDto.password());
-        if (decision.isCompromised()) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("password", "Choose a strong password"));
-        }
-        Optional<JobPortalUser> existingUser = jobPortalUserRepository.readByEmailOrMobileNumber
-                (registerRequestDto.email(), registerRequestDto.mobileNumber());
-        if (existingUser.isPresent()) {
-            Map<String, String> errors = new HashMap<>();
-            JobPortalUser jobPortalUser = existingUser.get();
-            if (jobPortalUser.getEmail().equalsIgnoreCase(registerRequestDto.email())) {
-                errors.put("email", "Email is already registered");
-            }
-            if (jobPortalUser.getMobileNumber().equalsIgnoreCase(registerRequestDto.mobileNumber())) {
-                errors.put("mobileNumber", "Mobile number is already registered");
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        } else {
-            JobPortalUser jobPortalUser = new JobPortalUser();
-            BeanUtils.copyProperties(registerRequestDto, jobPortalUser);
-            jobPortalUser.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));
-            Role role = roleRepository.findByName(ApplicationConstants.ROLE_JOB_SEEKER)
-                    .orElseThrow(() -> new IllegalArgumentException("Role not found " + ApplicationConstants.ROLE_JOB_SEEKER));
-            jobPortalUser.setRole(role);
-            jobPortalUserRepository.save(jobPortalUser);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
-        }
+        JobPortalUser jobPortalUser = new JobPortalUser();
+        BeanUtils.copyProperties(registerRequestDto, jobPortalUser);
+        jobPortalUser.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));
+        Role role = roleRepository.findByName(ApplicationConstants.ROLE_JOB_SEEKER)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found " + ApplicationConstants.ROLE_JOB_SEEKER));
+        jobPortalUser.setRole(role);
+        jobPortalUserRepository.save(jobPortalUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
     private ResponseEntity<LoginResponseDto> buildErrorResponse(HttpStatus status, String message) {
