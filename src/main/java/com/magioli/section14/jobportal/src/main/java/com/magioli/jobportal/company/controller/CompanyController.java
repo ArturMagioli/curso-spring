@@ -1,5 +1,6 @@
 package com.magioli.jobportal.company.controller;
 
+import com.magioli.jobportal.aspects.LogAspect;
 import com.magioli.jobportal.dto.CompanyDto;
 import com.magioli.jobportal.company.service.CompanyService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class CompanyController {
 //        this.companyService = companyService;
 //    }
 
+    @LogAspect
     @GetMapping(path = "/public", version = "1.0")
     public ResponseEntity<List<CompanyDto>> getAllCompanies() {
         List<CompanyDto> companyList = companyService.getAllCompanies();
