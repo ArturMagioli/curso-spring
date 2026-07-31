@@ -1,5 +1,6 @@
 package com.magioli.jobportal.company.service.impl;
 
+import com.magioli.jobportal.constants.ApplicationConstants;
 import com.magioli.jobportal.dto.CompanyDto;
 import com.magioli.jobportal.dto.JobDto;
 import com.magioli.jobportal.entity.Company;
@@ -25,7 +26,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyDto> getAllCompanies() {
-        List<Company> companyList = companyRepository.findAll();
+        List<Company> companyList = companyRepository.findAllWithJobsByStatus(ApplicationConstants.ACTIVE_STATUS);
         return companyList.stream().map(this::transformToDto).collect(Collectors.toList());
     }
 
