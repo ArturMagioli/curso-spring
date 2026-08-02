@@ -13,6 +13,19 @@ import java.util.List;
 @Entity
 @Table(name = "COMPANIES")
 @Getter @Setter
+@NamedQueries(
+    @NamedQuery(
+        name = "Company.fetchCompaniesWithJobsByStatus",
+        query = "SELECT DISTINCT c FROM Company c JOIN FETCH c.jobs j WHERE j.status = :status"
+    )
+)
+@NamedNativeQueries(
+    @NamedNativeQuery(
+        name = "Company.fetchCompaniesWithJobsByStatusNative",
+        query = "SELECT DISTINCT c.* FROM companies c JOIN jobs j ON c.id = j.company_id WHERE j.status = :status",
+        resultClass = Company.class
+    )
+)
 public class Company extends BaseEntity {
 
     @Id
