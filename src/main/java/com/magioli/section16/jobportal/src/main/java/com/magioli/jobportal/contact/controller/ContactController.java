@@ -2,6 +2,7 @@ package com.magioli.jobportal.contact.controller;
 
 import com.magioli.jobportal.contact.service.ContactService;
 import com.magioli.jobportal.dto.ContactRequestDto;
+import com.magioli.jobportal.dto.ContactResponseDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/contacts")
@@ -39,5 +42,11 @@ public class ContactController {
             String status
     ) {
         return ResponseEntity.ok("There are the contacts with the given status: " + status);
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<ContactResponseDto>> fetchNewContactMsgs() {
+        List<ContactResponseDto> contactResponseDtos = contactService.fetchNewContactMsgs();
+        return ResponseEntity.ok(contactResponseDtos);
     }
 }

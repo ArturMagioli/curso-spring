@@ -1,7 +1,9 @@
 package com.magioli.jobportal.contact.service.impl;
 
+import com.magioli.jobportal.constants.ApplicationConstants;
 import com.magioli.jobportal.contact.service.ContactService;
 import com.magioli.jobportal.dto.ContactRequestDto;
+import com.magioli.jobportal.dto.ContactResponseDto;
 import com.magioli.jobportal.entity.Contact;
 import com.magioli.jobportal.repository.ContactRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +37,21 @@ public class ContactServiceImpl implements ContactService {
         BeanUtils.copyProperties(contactRequestDto, contact);
         contact.setStatus("NEW");
         return contact;
+    }
+
+    @Override
+    public List<ContactResponseDto> fetchNewContactMsgs() {
+        List<Contact> contacts = contactRepository.findContactsByStatus(ApplicationConstants.NEW_MESSAGE);
+        List<ContactResponseDto> contactResponseDtos = contacts.stream()
+                .map(this::transformToDto)
+                .collect(Collectors.toList());
+        return contactResponseDtos;
+    }
+
+    private ContactResponseDto transformToDto(Contact contact) {
+        return new ContactResponseDto(contact.getId(),
+                contact.getName(), contact.getEmail(), contact.getUserType(),
+                contact.getSubject(), contact.getMessage(), contact.getStatus(),
+                contact.getCreatedAt());
     }
 }
