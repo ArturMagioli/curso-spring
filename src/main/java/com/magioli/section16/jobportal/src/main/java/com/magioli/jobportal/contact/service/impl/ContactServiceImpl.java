@@ -8,6 +8,9 @@ import com.magioli.jobportal.entity.Contact;
 import com.magioli.jobportal.repository.ContactRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +61,18 @@ public class ContactServiceImpl implements ContactService {
         List<ContactResponseDto> responseDtos = contacts.stream()
                 .map(this::transformToDto)
                 .collect(Collectors.toList());
+        return responseDtos;
+    }
+
+
+    @Override
+    public Page<ContactResponseDto> fetchNewContactMsgsWithPaginationAndSort(int pageNumber, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Contact> contactPage = contactRepository.findContactsByStatus(ApplicationConstants.NEW_MESSAGE, pageable);
+        Page<ContactResponseDto> responseDtos = contactPage.map(this::transformToDto);
         return responseDtos;
     }
 
