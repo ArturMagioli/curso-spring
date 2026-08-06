@@ -8,6 +8,7 @@ import com.magioli.jobportal.entity.Contact;
 import com.magioli.jobportal.repository.ContactRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -41,11 +42,23 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public List<ContactResponseDto> fetchNewContactMsgs() {
-        List<Contact> contacts = contactRepository.findContactsByStatus(ApplicationConstants.NEW_MESSAGE);
+        List<Contact> contacts = contactRepository.findContactsByStatusOrderByCreatedAtAsc(ApplicationConstants.NEW_MESSAGE);
         List<ContactResponseDto> contactResponseDtos = contacts.stream()
                 .map(this::transformToDto)
                 .collect(Collectors.toList());
         return contactResponseDtos;
+    }
+
+    @Override
+    public List<ContactResponseDto> fetchNewContactMsgsWithSort(String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        List<Contact> contacts = contactRepository.findContactsByStatus(ApplicationConstants.NEW_MESSAGE, sort);
+        List<ContactResponseDto> responseDtos = contacts.stream()
+                .map(this::transformToDto)
+                .collect(Collectors.toList());
+        return responseDtos;
     }
 
     private ContactResponseDto transformToDto(Contact contact) {
