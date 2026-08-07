@@ -1,5 +1,6 @@
 package com.magioli.jobportal.contact.controller;
 
+import com.magioli.jobportal.constants.ApplicationConstants;
 import com.magioli.jobportal.contact.service.ContactService;
 import com.magioli.jobportal.dto.ContactRequestDto;
 import com.magioli.jobportal.dto.ContactResponseDto;
@@ -69,5 +70,16 @@ public class ContactController {
         Page<ContactResponseDto> contactResponseDtoPage = contactService
                 .fetchNewContactMsgsWithPaginationAndSort(pageNumber, pageSize, sortBy, sortDir);
         return ResponseEntity.ok(contactResponseDtoPage);
+    }
+
+    @PatchMapping("/{id}/status/admin")
+    public ResponseEntity<String> closeContactMsg(@PathVariable String id) {
+        boolean isUpdated = contactService.closeContactMsg(Long.valueOf(id),
+                ApplicationConstants.CLOSED_MESSAGE);
+        if(isUpdated) {
+            return ResponseEntity.ok("Contact message updated successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to update contact message.");
+        }
     }
 }

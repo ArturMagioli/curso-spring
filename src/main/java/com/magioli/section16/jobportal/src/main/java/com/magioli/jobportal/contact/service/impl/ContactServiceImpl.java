@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,5 +82,17 @@ public class ContactServiceImpl implements ContactService {
                 contact.getName(), contact.getEmail(), contact.getUserType(),
                 contact.getSubject(), contact.getMessage(), contact.getStatus(),
                 contact.getCreatedAt());
+    }
+
+    @Override
+    public boolean closeContactMsg(Long id, String status) {
+        Contact contact = contactRepository.findById(id).orElse(null);
+        if (contact == null) {
+            return false;
+        } else {
+            contact.setStatus(status);
+            contactRepository.save(contact);
+        }
+        return true;
     }
 }
