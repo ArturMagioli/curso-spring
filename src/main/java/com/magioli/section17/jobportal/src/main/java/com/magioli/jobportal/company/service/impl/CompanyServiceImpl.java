@@ -9,20 +9,17 @@ import com.magioli.jobportal.repository.CompanyRepository;
 import com.magioli.jobportal.company.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
-
-
-//    public CompanyServiceImpl(CompanyRepository companyRepository) {
-//        this.companyRepository = companyRepository;
-//    }
 
     @Override
     public List<CompanyDto> getAllCompanies() {
