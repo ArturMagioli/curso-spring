@@ -9,6 +9,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "contacts")
 @Getter
 @Setter
+@NamedQueries({
+        @NamedQuery(name="Contact.updateStatusById",
+        query = "UPDATE Contact c SET c.status = :status, c.updatedAt = CURRENT_TIMESTAMP, c.updatedBy = :updatedBy WHERE c.id = :id")
+})
 public class Contact extends BaseEntity {
 
     @Id

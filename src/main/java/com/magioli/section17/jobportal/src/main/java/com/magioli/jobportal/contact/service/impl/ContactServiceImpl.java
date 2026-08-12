@@ -6,6 +6,7 @@ import com.magioli.jobportal.dto.ContactRequestDto;
 import com.magioli.jobportal.dto.ContactResponseDto;
 import com.magioli.jobportal.entity.Contact;
 import com.magioli.jobportal.repository.ContactRepository;
+import com.magioli.jobportal.util.ApplicationUtility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -15,9 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,13 +89,7 @@ public class ContactServiceImpl implements ContactService {
     @Transactional
     @Override
     public boolean closeContactMsg(Long id, String status) {
-        Contact contact = contactRepository.findById(id).orElse(null);
-        if (contact == null) {
-            return false;
-        } else {
-            contact.setStatus(status);
-            contactRepository.save(contact);
-        }
-        return true;
+        int updatedRows = contactRepository.updateStatusById(status, id, ApplicationUtility.getLoggedInUser());
+        return updatedRows > 0;
     }
 }
