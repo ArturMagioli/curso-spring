@@ -1,6 +1,7 @@
 package com.magioli.jobportal.repository;
 
 import com.magioli.jobportal.entity.Company;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,6 +25,13 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     List<Company> fetchCompaniesWithJobsByStatusNative(@Param("status") String status);
 
+    @CacheEvict(value = "companies", allEntries = true)
+    void deleteById(Long id);
+
+    @CacheEvict(value = "companies", allEntries = true)
+    Company save(Company company);
+
+    @CacheEvict(value = "companies", allEntries = true)
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     int updateCompanyDetails(
             @Param("id") Long id,

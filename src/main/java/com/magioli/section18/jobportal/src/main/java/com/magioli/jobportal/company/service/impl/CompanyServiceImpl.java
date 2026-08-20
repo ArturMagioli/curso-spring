@@ -29,6 +29,7 @@ public class CompanyServiceImpl implements CompanyService {
         return companyList.stream().map(this::transformToDto).collect(Collectors.toList());
     }
 
+    @Cacheable("companies")
     @Override
     public List<CompanyDto> getAllCompaniesForAdmin() {
         List<Company> companyList = companyRepository.findAll();
