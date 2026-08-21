@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,6 +38,9 @@ public class JobPortalSecurityConfig {
     @Qualifier("securedPaths")
     private final List<String> securedPaths;
 
+    @Qualifier("employerPaths")
+    private final List<String> employerPaths;
+
     @Qualifier("adminPaths")
     private final List<String> adminPaths;
 
@@ -51,6 +53,7 @@ public class JobPortalSecurityConfig {
                 .authorizeHttpRequests((requests) -> {
                     publicPaths.forEach(path -> requests.requestMatchers(path).permitAll());
                     adminPaths.forEach(path -> requests.requestMatchers(path).hasRole("ADMIN"));
+                    employerPaths.forEach(path -> requests.requestMatchers(path).hasRole("EMPLOYER"));
                     securedPaths.forEach(path -> requests.requestMatchers(path).authenticated());
                     requests.anyRequest().denyAll();
                 })

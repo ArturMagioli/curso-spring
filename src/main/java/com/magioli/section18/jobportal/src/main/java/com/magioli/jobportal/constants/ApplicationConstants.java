@@ -14,7 +14,9 @@ public class ApplicationConstants {
     public static final String ROLE_EMPLOYER = "ROLE_EMPLOYER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
+    public static final String DRAFT_STATUS = "DRAFT";
     public static final String ACTIVE_STATUS = "ACTIVE";
+    public static final String CLOSED_STATUS = "CLOSED";
 
     public static final String NEW_MESSAGE = "NEW";
     public static final String CLOSED_MESSAGE = "CLOSED";
