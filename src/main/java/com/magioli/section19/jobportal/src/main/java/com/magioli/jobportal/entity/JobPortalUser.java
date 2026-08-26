@@ -18,6 +18,9 @@ public class JobPortalUser extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+
     @Size(max = 255)
     @NotNull
     @Column(name = "name", nullable = false)
