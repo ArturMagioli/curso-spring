@@ -11,6 +11,8 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "jobs")
@@ -32,6 +34,9 @@ public class Job extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
+
+    @ManyToMany(mappedBy = "savedJobs")
+    private Set<JobPortalUser> savedByUsers = new HashSet<>();
 
     @Size(max = 50)
     @NotNull

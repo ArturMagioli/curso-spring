@@ -1,10 +1,12 @@
 package com.magioli.jobportal.user.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.magioli.jobportal.dto.JobDto;
 import com.magioli.jobportal.dto.ProfileDto;
 import com.magioli.jobportal.dto.UserDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -23,4 +25,10 @@ public interface UserService {
     ProfileDto getProfilePicture(String userEmail);
 
     ProfileDto getResume(String userEmail);
+
+    JobDto saveJob(String userEmail, Long jobId);
+
+    void unsaveJob(String userEmail, Long jobId);
+
+    List<JobDto> getSavedJobs(String userEmail);
 }

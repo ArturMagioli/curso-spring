@@ -2,17 +2,13 @@ package com.magioli.jobportal.user.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.magioli.jobportal.constants.ApplicationConstants;
+import com.magioli.jobportal.dto.JobDto;
 import com.magioli.jobportal.dto.ProfileDto;
 import com.magioli.jobportal.dto.UserDto;
-import com.magioli.jobportal.entity.Company;
-import com.magioli.jobportal.entity.JobPortalUser;
-import com.magioli.jobportal.entity.Profile;
-import com.magioli.jobportal.entity.Role;
-import com.magioli.jobportal.repository.CompanyRepository;
-import com.magioli.jobportal.repository.JobPortalUserRepository;
-import com.magioli.jobportal.repository.ProfileRepository;
-import com.magioli.jobportal.repository.RoleRepository;
+import com.magioli.jobportal.entity.*;
+import com.magioli.jobportal.repository.*;
 import com.magioli.jobportal.user.service.UserService;
+import com.magioli.jobportal.util.ApplicationUtility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -21,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final JobPortalUserRepository jobPortalUserRepository;
     private final RoleRepository roleRepository;
     private final ProfileRepository profileRepository;
+    private final JobRepository jobRepository;
 
     @Override
     public Optional<UserDto> findByEmail(String email) {
@@ -130,6 +129,36 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         return mapToProfileDto(user.getProfile(), true);
+    }
+
+    @Transactional
+    @Override
+    public JobDto saveJob(String userEmail, Long jobId) {
+        JobPortalUser user = jobPortalUserRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found with id: " + jobId));
+        user.getSavedJobs().add(job);
+        return ApplicationUtility.transformJobToDto(job);
+    }
+
+    @Transactional
+    @Override
+    public void unsaveJob(String userEmail, Long jobId) {
+        JobPortalUser user = jobPortalUserRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found with id: " + jobId));
+        user.getSavedJobs().remove(job);
+    }
+
+    @Override
+    public List<JobDto> getSavedJobs(String userEmail) {
+        JobPortalUser user = jobPortalUserRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+        return user.getSavedJobs().stream()
+                .map(job -> ApplicationUtility.transformJobToDto(job))
+                .collect(Collectors.toList());
     }
 
     private Profile mapToProfile(Profile profile, ProfileDto profileDto,

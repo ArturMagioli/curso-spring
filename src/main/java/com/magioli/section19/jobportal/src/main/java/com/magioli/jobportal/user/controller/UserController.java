@@ -1,6 +1,7 @@
 package com.magioli.jobportal.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.magioli.jobportal.dto.JobDto;
 import com.magioli.jobportal.dto.ProfileDto;
 import com.magioli.jobportal.dto.UserDto;
 import com.magioli.jobportal.user.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -98,5 +100,28 @@ public class UserController {
         headers.setContentLength(resume.length);
         headers.setContentDispositionFormData("attachment", profileDto.resumeName());
         return new ResponseEntity<>(resume, headers, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/saved-jobs/{jobId}/jobseeker", version = "1.0")
+    public ResponseEntity<JobDto> saveJob(@PathVariable Long jobId,
+                                          Authentication authentication) {
+        String userEmail = authentication.getPrincipal().toString();
+        JobDto savedJob = userService.saveJob(userEmail, jobId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedJob);
+    }
+
+    @DeleteMapping(path = "/saved-jobs/{jobId}/jobseeker", version = "1.0")
+    public ResponseEntity<String> unsaveJob(@PathVariable Long jobId,
+                                            Authentication authentication) {
+        String userEmail = authentication.getPrincipal().toString();
+        userService.unsaveJob(userEmail, jobId);
+        return ResponseEntity.ok("Job unsaved successfully");
+    }
+
+    @GetMapping(path = "/saved-jobs/jobseeker", version = "1.0")
+    public ResponseEntity<List<JobDto>> getSavedJobs(Authentication authentication) {
+        String userEmail = authentication.getPrincipal().toString();
+        List<JobDto> savedJobs = userService.getSavedJobs(userEmail);
+        return ResponseEntity.ok(savedJobs);
     }
 }
