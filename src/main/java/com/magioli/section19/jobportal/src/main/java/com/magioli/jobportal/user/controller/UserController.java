@@ -1,9 +1,7 @@
 package com.magioli.jobportal.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.magioli.jobportal.dto.JobDto;
-import com.magioli.jobportal.dto.ProfileDto;
-import com.magioli.jobportal.dto.UserDto;
+import com.magioli.jobportal.dto.*;
 import com.magioli.jobportal.user.service.UserService;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -123,5 +121,28 @@ public class UserController {
         String userEmail = authentication.getPrincipal().toString();
         List<JobDto> savedJobs = userService.getSavedJobs(userEmail);
         return ResponseEntity.ok(savedJobs);
+    }
+
+    @PostMapping(path = "/job-applications/jobseeker", version = "1.0")
+    public ResponseEntity<JobApplicationDto> applyJob(@RequestBody ApplyJobRequestDto applyJobRequestDto,
+                                                      Authentication authentication) {
+        String userEmail = authentication.getPrincipal().toString();
+        JobApplicationDto jobApplication = userService.applyJob(userEmail, applyJobRequestDto);
+        return ResponseEntity.ok(jobApplication);
+    }
+
+    @DeleteMapping(path = "/job-applications/{jobId}/jobseeker", version = "1.0")
+    public ResponseEntity<String> withdrawApplication(@PathVariable Long jobId,
+                                                      Authentication authentication) {
+        String userEmail = authentication.getPrincipal().toString();
+        userService.withdrawApplication(userEmail, jobId);
+        return ResponseEntity.ok("Applidation withdraw successfully");
+    }
+
+    @GetMapping(path = "/job-applications/jobseeker", version = "1.0")
+    public ResponseEntity<List<JobApplicationDto>> getJobseekerApplications(Authentication authentication) {
+        String userEmail = authentication.getPrincipal().toString();
+        List<JobApplicationDto> applications = userService.getJobseekerApplications(userEmail);
+        return ResponseEntity.ok(applications);
     }
 }
