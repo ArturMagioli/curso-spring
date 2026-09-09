@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,8 +36,14 @@ public class JwtUtil {
     @Value("${jwt.expiration.hours:1}")
     private int jwtExpirationHours;
 
+    @Value("${jwt.prod.expiration.hours:1}")
+    private int jwtProdExpirationHours;
+
     public String generateJwtToken(Authentication authentication) {
         String jwtToken;
+
+        List<String> profiles = Arrays.asList(env.getActiveProfiles());
+        int expirationHours = profiles.contains("prod") ? jwtProdExpirationHours : jwtExpirationHours;
         String secret = env.getProperty(ApplicationConstants.JWT_SECRET_KEY,
                 ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
         SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
@@ -47,7 +55,7 @@ public class JwtUtil {
                 .claim("roles", authentication.getAuthorities().stream().map(
                         GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                 .issuedAt(new Date())
-                .expiration(new Date(new Date().getTime() * jwtExpirationHours * 60 * 60 * 1000))
+                .expiration(new Date(new Date().getTime() * expirationHours * 60 * 60 * 1000))
                 .signWith(secretKey).compact();
         return jwtToken;
     }
