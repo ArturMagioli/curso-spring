@@ -55,7 +55,6 @@ public class AuthController {
             BeanUtils.copyProperties(jobPortalUser, userDto);
             userDto.setRole(jobPortalUser.getRole().getName());
             userDto.setUserId(jobPortalUser.getId());
-            System.out.println(SecurityContextHolder.getContext().getAuthentication());
             return ResponseEntity.ok(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),
                     userDto, jwtToken));
         } catch (BadCredentialsException ex) {
