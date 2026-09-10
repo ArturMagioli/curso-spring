@@ -1,6 +1,8 @@
 package com.magioli.jobportal.job.controller;
 
+import com.magioli.jobportal.dto.JobApplicationDto;
 import com.magioli.jobportal.dto.JobDto;
+import com.magioli.jobportal.dto.UpdateJobApplicationDto;
 import com.magioli.jobportal.job.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +47,21 @@ public class JobController {
         String email = authentication.getPrincipal().toString();
         JobDto updatedJob = jobService.updateJobStatus(Long.valueOf(jobId), status.toUpperCase(), email);
         return ResponseEntity.ok(updatedJob);
+    }
+
+    @GetMapping(path = "/applications/{jobId}/employer", version = "1.0")
+    public ResponseEntity<List<JobApplicationDto>> getApplicationsByJobForEmployer(
+            @PathVariable Long jobId) {
+        List<JobApplicationDto> jobApplications = jobService.getApplicationsByJobForEmployer(jobId);
+        return ResponseEntity.ok(jobApplications);
+    }
+
+    @PatchMapping(path = "/applications/employer", version = "1.0")
+    public ResponseEntity<String> updateJobApplication(@RequestBody @Valid UpdateJobApplicationDto dto) {
+        boolean updated = jobService.updateJobApplication(dto);
+        if (!updated) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update application");
+        }
+        return ResponseEntity.ok("Application updated successfully");
     }
 }

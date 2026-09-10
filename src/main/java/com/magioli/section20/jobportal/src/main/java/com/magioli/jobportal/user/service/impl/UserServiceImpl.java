@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
         ObjectMapper objectMapper = new ObjectMapper();
         ProfileDto profileDto = objectMapper.readValue(profileJson, ProfileDto.class);
         Profile savedProfile = profileRepository.save(mapToProfile(profile, profileDto, profilePicture, resume));
-        return mapToProfileDto(savedProfile, false);
+        return ApplicationUtility.mapToProfileDto(savedProfile, false);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
         if (user.getProfile() == null) {
             return null;
         }
-        return mapToProfileDto(user.getProfile(), false);
+        return ApplicationUtility.mapToProfileDto(user.getProfile(), false);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         if (user.getProfile() == null) {
             return null;
         }
-        return mapToProfileDto(user.getProfile(), true);
+        return ApplicationUtility.mapToProfileDto(user.getProfile(), true);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         if (user.getProfile() == null) {
             return null;
         }
-        return mapToProfileDto(user.getProfile(), true);
+        return ApplicationUtility.mapToProfileDto(user.getProfile(), true);
     }
 
     @Transactional
@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserService {
         jobApplication.setCoverLetter(applyJobRequestDto.coverLetter());
         JobApplication saved = jobApplicationRepository.save(jobApplication);
         job.setApplicationsCount(job.getApplicationsCount() != null ? job.getApplicationsCount() + 1 : 1);
-        return mapToJobApplicationDto(saved);
+        return ApplicationUtility.mapToJobApplicationDto(saved);
     }
 
     @Transactional
@@ -204,29 +204,8 @@ public class UserServiceImpl implements UserService {
         JobPortalUser user = jobPortalUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
         return user.getJobApplications().stream()
-                .map(this::mapToJobApplicationDto)
+                .map(application -> ApplicationUtility.mapToJobApplicationDto(application))
                 .collect(Collectors.toList());
-    }
-
-    private JobApplicationDto mapToJobApplicationDto(JobApplication jobApplication) {
-        Profile profile = jobApplication.getUser().getProfile();
-        ProfileDto profileDto = null;
-        if (profile != null) {
-            profileDto = mapToProfileDto(profile, true);
-        }
-        return new JobApplicationDto(
-                jobApplication.getId(),
-                jobApplication.getUser().getId(),
-                jobApplication.getUser().getName(),
-                jobApplication.getUser().getEmail(),
-                jobApplication.getUser().getMobileNumber(),
-                profileDto,
-                ApplicationUtility.transformJobToDto(jobApplication.getJob()),
-                jobApplication.getAppliedAt(),
-                jobApplication.getStatus(),
-                jobApplication.getCoverLetter(),
-                jobApplication.getNotes()
-        );
     }
 
     private Profile mapToProfile(Profile profile, ProfileDto profileDto,
@@ -257,24 +236,5 @@ public class UserServiceImpl implements UserService {
             }
         }
         return profile;
-    }
-
-    private ProfileDto mapToProfileDto(Profile profile, boolean includeBinaryData) {
-        ProfileDto dto;
-        if (includeBinaryData) {
-            dto = new ProfileDto(profile.getId(), profile.getUser().getId(),
-                    profile.getJobTitle(), profile.getLocation(), profile.getExperienceLevel(),
-                    profile.getProfessionalBio(), profile.getPortfolioWebsite(), profile.getProfilePicture(),
-                    profile.getProfilePictureName(), profile.getProfilePictureType(), profile.getResume(),
-                    profile.getResumeName(), profile.getResumeType(), profile.getCreatedAt(), profile.getUpdatedAt()
-            );
-        } else {
-            dto = new ProfileDto(profile.getId(), profile.getUser().getId(),
-                    profile.getJobTitle(), profile.getLocation(), profile.getExperienceLevel(),
-                    profile.getProfessionalBio(), profile.getPortfolioWebsite(), null,
-                    profile.getProfilePictureName(), profile.getProfilePictureType(), null,
-                    profile.getResumeName(), profile.getResumeType(), profile.getCreatedAt(), profile.getUpdatedAt());
-        }
-        return dto;
     }
 }

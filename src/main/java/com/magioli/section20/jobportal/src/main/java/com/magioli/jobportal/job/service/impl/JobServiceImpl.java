@@ -1,11 +1,15 @@
 package com.magioli.jobportal.job.service.impl;
 
 import com.magioli.jobportal.constants.ApplicationConstants;
+import com.magioli.jobportal.dto.JobApplicationDto;
 import com.magioli.jobportal.dto.JobDto;
+import com.magioli.jobportal.dto.UpdateJobApplicationDto;
 import com.magioli.jobportal.entity.Company;
 import com.magioli.jobportal.entity.Job;
+import com.magioli.jobportal.entity.JobApplication;
 import com.magioli.jobportal.entity.JobPortalUser;
 import com.magioli.jobportal.job.service.JobService;
+import com.magioli.jobportal.repository.JobApplicationRepository;
 import com.magioli.jobportal.repository.JobPortalUserRepository;
 import com.magioli.jobportal.repository.JobRepository;
 import com.magioli.jobportal.util.ApplicationUtility;
@@ -26,6 +30,7 @@ public class JobServiceImpl implements JobService {
 
     private final JobPortalUserRepository jobPortalUserRepository;
     private final JobRepository jobRepository;
+    private final JobApplicationRepository jobApplicationRepository;
 
     @Cacheable("jobs")
     @Override
@@ -60,6 +65,12 @@ public class JobServiceImpl implements JobService {
         return ApplicationUtility.transformJobToDto(savedJob);
     }
 
+    private Job convertToJob(JobDto jobDto) {
+        Job newJob = new Job();
+        BeanUtils.copyProperties(jobDto, newJob);
+        return newJob;
+    }
+
     @Transactional
     @Override
     public JobDto updateJobStatus(Long jobId, String status, String email) {
@@ -84,9 +95,19 @@ public class JobServiceImpl implements JobService {
         return ApplicationUtility.transformJobToDto(updatedJob);
     }
 
-    private Job convertToJob(JobDto jobDto) {
-        Job newJob = new Job();
-        BeanUtils.copyProperties(jobDto, newJob);
-        return newJob;
+    @Override
+    public List<JobApplicationDto> getApplicationsByJobForEmployer(Long jobId) {
+        List<JobApplication> applications = jobApplicationRepository.findByJobIdOrderByAppliedAtAsc(jobId);
+        return applications.stream()
+                .map(application -> ApplicationUtility.mapToJobApplicationDto(application))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public boolean updateJobApplication(UpdateJobApplicationDto dto) {
+        int affectedRows = jobApplicationRepository.updateStatusAndNotesById(
+                dto.status().name(), dto.notes(), dto.applicationId(), ApplicationUtility.getLoggedInUser());
+        return affectedRows > 0;
     }
 }
