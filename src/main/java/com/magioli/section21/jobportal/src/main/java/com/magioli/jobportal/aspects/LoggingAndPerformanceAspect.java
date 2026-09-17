@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAndPerformanceAspect {
 
-    @Around("@annotation(com.magioli.jobportal.aspects.LogAspect)")
-//    @Around("execution(* com.magioli.jobportal..*.*(..))")
+//    @Around("@annotation(com.magioli.jobportal.aspects.LogAspect)")
+    @Around("execution(* com.magioli.jobportal..*.*(..))")
     public Object logAndMeasureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         String methodName = joinPoint.getSignature().toShortString();
