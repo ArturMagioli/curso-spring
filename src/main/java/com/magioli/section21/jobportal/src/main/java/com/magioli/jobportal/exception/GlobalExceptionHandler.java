@@ -1,6 +1,9 @@
 package com.magioli.jobportal.exception;
 
 import com.magioli.jobportal.dto.ErrorResponseDto;
+import io.micrometer.tracing.TraceContext;
+import io.micrometer.tracing.Tracer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,13 +21,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final Tracer tracer;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleException(Exception exception, WebRequest webRequest) {
+        TraceContext context = tracer.currentTraceContext().context();
+        String traceId = context != null ? context.traceId() : "";
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(
                 webRequest.getDescription(false), HttpStatus.INTERNAL_SERVER_ERROR,
-                exception.getMessage(), LocalDateTime.now());
+                exception.getMessage(), LocalDateTime.now(), traceId);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponseDto);
     }
@@ -56,9 +64,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ErrorResponseDto> handleNullException(Exception exception, WebRequest webRequest) {
+        TraceContext context = tracer.currentTraceContext().context();
+        String traceId = context != null ? context.traceId() : "";
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(
                 webRequest.getDescription(false), HttpStatus.INTERNAL_SERVER_ERROR,
-                "A NullPointerException ocuured due to: "+exception.getMessage(), LocalDateTime.now());
+                "A NullPointerException ocuured due to: "+exception.getMessage(), LocalDateTime.now(), traceId);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponseDto);
     }
