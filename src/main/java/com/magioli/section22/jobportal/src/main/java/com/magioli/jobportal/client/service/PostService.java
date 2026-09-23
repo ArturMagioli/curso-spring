@@ -7,7 +7,7 @@ import org.springframework.web.service.annotation.*;
 
 import java.util.List;
 
-@HttpExchange(url = "https://jsonplaceholder.typicode.com/posts")
+@HttpExchange//(url = "https://jsonplaceholder.typicode.com/posts")
 public interface PostService {
 
     @GetExchange

@@ -7,7 +7,7 @@ import org.springframework.web.service.annotation.*;
 
 import java.util.List;
 
-@HttpExchange(url = "https://jsonplaceholder.typicode.com/todos")
+@HttpExchange//(url = "https://jsonplaceholder.typicode.com/todos")
 public interface TodoService {
 
     @GetExchange
